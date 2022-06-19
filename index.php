@@ -1,1 +1,2 @@
-echo "475de87f"
+<?php
+echo "475de87f";
