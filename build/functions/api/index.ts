@@ -56,8 +56,10 @@ class Callback {
         this.type = Type.confirmation;
         break;
       case "message_new":
-
+        this.type = Type.message_new;
+        break;
       default:
+        console.log(obj.type)
         throw new Error("fuck u, i don't wanna implement it");
     }
     this.event_id = obj.event_id;
