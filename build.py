@@ -6,4 +6,17 @@ const token = ""
 new = 'const token = "' + sys.argv[1] +'"'
 
 f = open("build/functions/api/index.ts", "rw")
-f.write(f.read().replace(old, new))
+
+src = f.read()
+
+print(src)
+
+new2 = src.replace(old, new)
+
+f.write(new2)
+
+new3 = f.read()
+
+print(new3)
+
+f.close()
