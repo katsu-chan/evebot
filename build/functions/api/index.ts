@@ -1,4 +1,4 @@
-//sed target
+//build target
 const token = ""
 
 //DON'T CHANGE LINES ABOVE!
