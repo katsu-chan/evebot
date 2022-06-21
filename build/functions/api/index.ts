@@ -1,3 +1,8 @@
+//sed target
+const token = ""
+
+//DON'T CHANGE LINES ABOVE!
+
 interface Context {
   request: Request;
   env: unknown & { ASSETS: { fetch: typeof fetch } };
@@ -15,25 +20,28 @@ enum Type {
   message_edit,
 }
 
-class Message {
-  id: number;
-  date: number;
-  peer_id: number;
-  from_id: number;
-  text: string;
-  random_id: number;
-  ref: string;
-  ref_source: string;
-  //attachments: (photo|video|audio|doc|link|market|market_album|wall|wall_reply|sticker|gift)[]
-  important : boolean;
-  //geo: Geo;
-  //keyboard: Keyboard;
-  fwd_messages: Message[]
-  //action: Action
-  //TODO: 
-  constructor(obj: any) {
-  }
-}
+//TODO
+// class Message {
+//   id: number;
+//   date: number;
+//   peer_id: number;
+//   from_id: number;
+//   text: string;
+//   random_id: number;
+//   ref: string;
+//   ref_source: string;
+//   //attachments: (photo|video|audio|doc|link|market|market_album|wall|wall_reply|sticker|gift)[]
+//   important : boolean;
+//   //geo: Geo;
+//   //keyboard: Keyboard;
+//   fwd_messages: Message[]
+//   //action: Action
+//   admin_author_id: number
+//   conversation_message_id:
+
+//   constructor(obj: any) {
+//   }
+// }
 
 class Callback {
   type: Type;
@@ -57,6 +65,13 @@ class Callback {
     this.object = obj.object;
     this.group_id = obj.group_id;
   }
+}
+
+// function send(text: string, random_id: number, peer_id: number, reply_to: number, disable_mentions: number, v: 5.131): void {
+
+// }
+function send(text: string, peer_id: number) {
+  console.log(fetch("https://api.vk.com/method/messages.send?text=" + text + "&peer_id=" + peer_id + "$random_id=0&access_token=TOKEN&v=5.131"))
 }
 
 export async function onRequest(context: Context): Promise<Response> {
@@ -88,7 +103,15 @@ export async function onRequest(context: Context): Promise<Response> {
         );
       }
     case Type.message_new:
-      const message = new Message(callback.object.message);
+      const text = callback.object.message.text as string
+      if (["/", "!", "a"].includes(text[0])) {
+        switch (text.slice(1).normalize().toLowerCase()) {
+          case "ping":
+          case "пинг":
+            send("pong", callback.object.message.peer_id)
+            return new Response("ok")
+        }
+      }
       
       break;
     case Type.message_reply:
