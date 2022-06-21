@@ -13,6 +13,6 @@ print(src)
 
 new2 = src.replace(old, new)
 
-f = open("build/functions/api/index.ts", "r")
+f = open("build/functions/api/index.ts", "w")
 f.write(new2)
 f.close()
