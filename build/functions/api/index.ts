@@ -72,8 +72,9 @@ class Callback {
 // function send(text: string, random_id: number, peer_id: number, reply_to: number, disable_mentions: number, v: 5.131): void {
 
 // }
-function send(text: string, peer_id: number) {
-  console.log(fetch("https://api.vk.com/method/messages.send?text=" + text + "&peer_id=" + peer_id + "$random_id=0&access_token=TOKEN&v=5.131"))
+async function send(text: string, peer_id: number) {
+  const a = await fetch("https://api.vk.com/method/messages.send?message=" + text + "&peer_id=" + peer_id + "&random_id=0&access_token=" + token + "&v=5.131")
+  console.log(await a.text())
 }
 
 export async function onRequest(context: Context): Promise<Response> {
@@ -114,6 +115,8 @@ export async function onRequest(context: Context): Promise<Response> {
             return new Response("ok")
         }
       }
+
+      return new Response("ok")
       
       break;
     case Type.message_reply:
