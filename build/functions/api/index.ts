@@ -72,9 +72,15 @@ class Callback {
 // function send(text: string, random_id: number, peer_id: number, reply_to: number, disable_mentions: number, v: 5.131): void {
 
 // }
-async function send(text: string, peer_id: number) {
+async function send(text: string, peer_id: number): Promise<Response> {
   const a = await fetch("https://api.vk.com/method/messages.send?message=" + text + "&peer_id=" + peer_id + "&random_id=0&access_token=" + token + "&v=5.131")
-  console.log(await a.text())
+  const resp = await a.text()
+  console.log(resp)
+  if (JSON.parse(resp).hasOwnProperty('error')) {
+    return new Response(resp)
+  } else {
+    return new Response("ok")
+  }
 }
 
 export async function onRequest(context: Context): Promise<Response> {
@@ -111,8 +117,8 @@ export async function onRequest(context: Context): Promise<Response> {
         switch (text.slice(1).normalize().toLowerCase()) {
           case "ping":
           case "пинг":
-            send("pong", callback.object.message.peer_id)
-            return new Response("ok")
+            const resp = send("pong", callback.object.message.peer_id)
+            return resp
         }
       }
 
