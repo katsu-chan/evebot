@@ -72,8 +72,8 @@ class Callback {
 // function send(text: string, random_id: number, peer_id: number, reply_to: number, disable_mentions: number, v: 5.131): void {
 
 // }
-async function send(text: string, peer_id: number): Promise<Response> {
-  const a = await fetch("https://api.vk.com/method/messages.send?message=" + text + "&peer_id=" + peer_id + "&random_id=0&access_token=" + token + "&v=5.131")
+async function send(text: string, peer_id: number, random_id: number = 0, reply_to: number = 0, disable_mentions: boolean = false): Promise<Response> {
+  const a = await fetch("https://api.vk.com/method/messages.send?message=" + text + "&peer_id=" + peer_id + "&random_id=" + random_id + "&reply_to=" + reply_to + "&disable_mentions=" + disable_mentions + "&access_token=" + token + "&v=5.131")
   const resp = await a.text()
   console.log(resp)
   if (JSON.parse(resp).hasOwnProperty('error')) {
