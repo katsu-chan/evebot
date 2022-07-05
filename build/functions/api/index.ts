@@ -120,7 +120,7 @@ export async function onRequest(context: Context): Promise<Response> {
             const resp = send("pong", callback.object.message.peer_id)
             return resp
           case "r34":
-            send(JSON.stringify(JSON.parse(await (await fetch("https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&limit=2&pid=0&tags=furry&json=1")).text())), callback.object.message.peer_id)
+            JSON.parse(await (await fetch("https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&limit=2&pid=0&tags=furry&json=1")).text()).foreach(function(post){send(post.file_url, callback.object.message.peer_id)})
         }
 
       }
