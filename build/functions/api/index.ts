@@ -84,61 +84,65 @@ async function send(text: string, peer_id: number): Promise<Response> {
 }
 
 export async function onRequest(context: Context): Promise<Response> {
-  const {
-    request, // same as existing Worker API
-    env, // same as existing Worker API
-    params, // if filename includes [id] or [[path]]
-    waitUntil, // same as ctx.waitUntil in existing Worker API
-    next, // used for middleware or to fetch assets
-    data, // arbitrary space for passing data between middlewares
-  } = context;
-  //a[0]
-  //JSON.stringify()
-  //const info = JSON.stringify(data, null, 2);
-  //return new Response(b.toString() + "abc");
+  try {
+    const {
+      request, // same as existing Worker API
+      env, // same as existing Worker API
+      params, // if filename includes [id] or [[path]]
+      waitUntil, // same as ctx.waitUntil in existing Worker API
+      next, // used for middleware or to fetch assets
+      data, // arbitrary space for passing data between middlewares
+    } = context;
+    //a[0]
+    //JSON.stringify()
+    //const info = JSON.stringify(data, null, 2);
+    //return new Response(b.toString() + "abc");
 
-  //console.log(JSON.parse(await request.text()))
-  const callback = new Callback(JSON.parse(await request.text()));
-  //const callback = await request.json<Callback>();
+    //console.log(JSON.parse(await request.text()))
+    const callback = new Callback(JSON.parse(await request.text()));
+    //const callback = await request.json<Callback>();
 
-  switch (callback.type) {
-    case Type.confirmation:
-      if (callback.group_id == 206250650) {
-        console.log("Confirmation!");
-        return new Response("421db0a8");
-      } else {
-        return new Response(
-          "УБЛЮДОК, МАТИ ТВОЮ! А НУ ЙДИ СЮДИ, ГІВНО СОБАЧЕ! А? ЗДУРУ ВИРІШИВ ДО МЕНЕ ЛІЗТИ, ТИ ЗАСРАНЕЦЬ СМЕРДЮЧИЙ, МАТИ ТВОЮ! А? НУ ЙДИ СЮДИ, СПРОБУЙ МЕНЕ ТРАХНУТИ! Я ТЕБЕ САМ ТРАХНУ! УБЛЮДОК, ОНАНІСТ ЧОРТІВ, БУДЬ ТИ ПРОКЛЯТИЙ! ІДИ, ІДІОТ! ТРАХАЙ ТЕБЕ І ВСЮ ТВОЮ СІМ'Ю. ГІВНО СОБАЧЕ, ЖЛОБ СМЕРДЮЧИЙ! ЛАЙНО, СУКА, ПАДЛА! ІДИ СЮДИ, МЕРЗОТНИК, НЕГІДНИК, ГАД! ІДИ СЮДИ, ТИ ГІВНО, ЖОПА!"
-        );
-      }
-    case Type.message_new:
-      const text = callback.object.message.text as string
-      if (["/", "!", "a"].includes(text[0])) {
-        switch (text.slice(1).normalize().toLowerCase()) {
-          case "ping":
-          case "пинг":
-            const resp = send("pong", callback.object.message.peer_id)
-            return resp
-          case "r34":
-            JSON.parse(await (await fetch("https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&limit=2&pid=0&tags=furry&json=1")).text()).foreach(function(post){send(post.file_url, callback.object.message.peer_id)})
+    switch (callback.type) {
+      case Type.confirmation:
+        if (callback.group_id == 206250650) {
+          console.log("Confirmation!");
+          return new Response("421db0a8");
+        } else {
+          return new Response(
+            "УБЛЮДОК, МАТИ ТВОЮ! А НУ ЙДИ СЮДИ, ГІВНО СОБАЧЕ! А? ЗДУРУ ВИРІШИВ ДО МЕНЕ ЛІЗТИ, ТИ ЗАСРАНЕЦЬ СМЕРДЮЧИЙ, МАТИ ТВОЮ! А? НУ ЙДИ СЮДИ, СПРОБУЙ МЕНЕ ТРАХНУТИ! Я ТЕБЕ САМ ТРАХНУ! УБЛЮДОК, ОНАНІСТ ЧОРТІВ, БУДЬ ТИ ПРОКЛЯТИЙ! ІДИ, ІДІОТ! ТРАХАЙ ТЕБЕ І ВСЮ ТВОЮ СІМ'Ю. ГІВНО СОБАЧЕ, ЖЛОБ СМЕРДЮЧИЙ! ЛАЙНО, СУКА, ПАДЛА! ІДИ СЮДИ, МЕРЗОТНИК, НЕГІДНИК, ГАД! ІДИ СЮДИ, ТИ ГІВНО, ЖОПА!"
+          );
+        }
+      case Type.message_new:
+        const text = callback.object.message.text as string
+        if (["/", "!", "a"].includes(text[0])) {
+          switch (text.slice(1).normalize().toLowerCase()) {
+            case "ping":
+            case "пинг":
+              const resp = send("pong", callback.object.message.peer_id)
+              return resp
+            case "r34":
+              JSON.parse(await (await fetch("https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&limit=2&pid=0&tags=furry&json=1")).text()).foreach(function (post) { send(post.file_url, callback.object.message.peer_id) })
+          }
+
         }
 
-      }
+        return new Response("ok")
 
-      return new Response("ok")
-      
-      break;
-    case Type.message_reply:
-      //const message = new Message(callback.object);
-      break;
-    case Type.message_edit:
-      //const message = new Message(callback.object);
-      break;
+        break;
+      case Type.message_reply:
+        //const message = new Message(callback.object);
+        break;
+      case Type.message_edit:
+        //const message = new Message(callback.object);
+        break;
+    }
+
+    console.log(callback.type);
+    console.log(callback.group_id);
+    console.log(typeof callback);
+    console.log(callback);
+    return new Response();
+  } catch (e) {
+    return new Response(e.name + ': ' + e.message)
   }
-
-  console.log(callback.type);
-  console.log(callback.group_id);
-  console.log(typeof callback);
-  console.log(callback);
-  return new Response();
 }
