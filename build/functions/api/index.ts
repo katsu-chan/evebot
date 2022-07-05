@@ -72,8 +72,8 @@ class Callback {
 // function send(text: string, random_id: number, peer_id: number, reply_to: number, disable_mentions: number, v: 5.131): void {
 
 // }
-async function send(text: string, peer_id: number, random_id: number = 0, reply_to: number = 0, disable_mentions: boolean = false): Promise<Response> {
-  const a = await fetch("https://api.vk.com/method/messages.send?message=" + text + "&peer_id=" + peer_id + "&random_id=" + random_id + "&reply_to=" + reply_to + "&disable_mentions=" + disable_mentions + "&access_token=" + token + "&v=5.131")
+async function send(text: string, peer_id: number): Promise<Response> {
+  const a = await fetch("https://api.vk.com/method/messages.send?message=" + text + "&peer_id=" + peer_id + "&random_id=0&access_token=" + token + "&v=5.131")
   const resp = await a.text()
   console.log(resp)
   if (JSON.parse(resp).hasOwnProperty('error')) {
@@ -119,7 +119,10 @@ export async function onRequest(context: Context): Promise<Response> {
           case "пинг":
             const resp = send("pong", callback.object.message.peer_id)
             return resp
+          case "r34":
+            send(JSON.stringify(JSON.parse(await (await fetch("https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&limit=2&pid=0&tags=furry&json=1")).text())), callback.object.message.peer_id)
         }
+
       }
 
       return new Response("ok")
