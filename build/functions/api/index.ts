@@ -131,8 +131,9 @@ export async function onRequest(context: Context): Promise<Response> {
               return resp
             case "r34":
               for (const post of JSON.parse(await (await fetch("https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&limit=2&pid=0&tags=furry&json=1")).text())) {
-                const resp = await send(peer_id, post.file_url, await linktophotoattachment(peer_id))
-                return resp
+                //const resp = await send(peer_id, post.file_url, await linktophotoattachment(peer_id))
+                //return resp
+                return new Response(await linktophotoattachment(peer_id))
               }
           }
 
@@ -160,9 +161,11 @@ export async function onRequest(context: Context): Promise<Response> {
 }
 async function linktophotoattachment(peer_id: number): Promise<string> {
   
-  return JSON.parse(await (await fetch(
+  const resp = JSON.parse(await (await fetch(
     "https://api.vk.com/method/photos.getMessagesUploadServer?&access_token=" +
-    token + "&v=5.131&peer_id=" + peer_id)).text()).response.upload_url;
-  
+    token + "&v=5.131&peer_id=" + peer_id)).text())
+  const resp2 = JSON.stringify(resp)
+  //response.upload_url;
+  return resp2
 }
 
