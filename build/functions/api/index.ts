@@ -131,8 +131,8 @@ export async function onRequest(context: Context): Promise<Response> {
               return resp
             case "r34":
               for (const post of JSON.parse(await (await fetch("https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&limit=2&pid=0&tags=furry&json=1")).text())) {
-                send(peer_id, post.file_url, await linktophotoattachment(peer_id))
-
+                const resp = await send(peer_id, post.file_url, await linktophotoattachment(peer_id))
+                return resp
               }
           }
 
