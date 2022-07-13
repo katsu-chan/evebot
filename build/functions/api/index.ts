@@ -72,8 +72,15 @@ class Callback {
 // function send(text: string, random_id: number, peer_id: number, reply_to: number, disable_mentions: number, v: 5.131): void {
 
 // }
-async function send(text: string, peer_id: number): Promise<Response> {
-  const a = await fetch("https://api.vk.com/method/messages.send?message=" + text + "&peer_id=" + peer_id + "&random_id=0&access_token=" + token + "&v=5.131")
+async function send(peer_id: number, text?: string, attachment?: string): Promise<Response> {
+  var url = "https://api.vk.com/method/messages.send?random_id=0&access_token=" + token + "&v=5.131"
+  if (text !== undefined) {
+    url += "&message=" + text
+  }
+  if (attachment !== undefined) {
+    url += "&attachment=" + attachment
+  }
+  const a = await fetch(url)
   const resp = await a.text()
   console.log(resp)
   if (JSON.parse(resp).hasOwnProperty('error')) {
@@ -102,6 +109,8 @@ export async function onRequest(context: Context): Promise<Response> {
     const callback = new Callback(JSON.parse(await request.text()));
     //const callback = await request.json<Callback>();
 
+    const peer_id = callback.object.message.peer_id;
+
     switch (callback.type) {
       case Type.confirmation:
         if (callback.group_id == 206250650) {
@@ -118,13 +127,13 @@ export async function onRequest(context: Context): Promise<Response> {
           switch (text.slice(1).normalize().toLowerCase()) {
             case "ping":
             case "пинг":
-              const resp = send("pong", callback.object.message.peer_id)
+              const resp = send(peer_id, "pong")
               return resp
             case "r34":
-            for (const post of JSON.parse(await (await fetch("https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&limit=2&pid=0&tags=furry&json=1")).text())) {
-              send(post.file_url, callback.object.message.peer_id)
+              for (const post of JSON.parse(await (await fetch("https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&limit=2&pid=0&tags=furry&json=1")).text())) {
+                send(peer_id, post.file_url, await linktophotoattachment(peer_id))
 
-            }
+              }
           }
 
         }
@@ -149,3 +158,11 @@ export async function onRequest(context: Context): Promise<Response> {
     return new Response(e.name + ': ' + e.message)
   }
 }
+async function linktophotoattachment(peer_id: number): Promise<string> {
+  
+  return JSON.parse(await (await fetch(
+    "https://api.vk.com/method/photos.getMessagesUploadServer?&access_token=" +
+    token + "&v=5.131&peer_id=" + peer_id)).text()).response.upload_url;
+  
+}
+
