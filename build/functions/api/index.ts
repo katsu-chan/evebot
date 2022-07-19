@@ -133,7 +133,10 @@ export async function onRequest(context: Context): Promise<Response> {
               for (const post of JSON.parse(await (await fetch("https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&limit=2&pid=0&tags=furry&json=1")).text())) {
                 //const resp = await send(peer_id, post.file_url, await linktophotoattachment(peer_id))
                 //return resp
-                return new Response(await linktophotoattachment(peer_id))
+                const fd = new FormData
+                fd.append("img", await (await fetch(post.file_url)).blob(), "image")
+                fetch(await linktophotoattachment(peer_id), {method: "post", body: fd})
+                //return new Response(await linktophotoattachment(peer_id))
               }
           }
 
