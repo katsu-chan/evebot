@@ -135,7 +135,7 @@ export async function onRequest(context: Context): Promise<Response> {
                 //return resp
                 const fd = new FormData
                 fd.append("img", await (await fetch(post.file_url)).blob(), "image");
-                return send(peer_id, "", await (await fetch(await linktophotoattachment(peer_id), {method: "post", body: fd})).json<object>().photo)
+                return send(peer_id, post.file_url, await (await fetch(await linktophotoattachment(peer_id), {method: "post", body: fd})).json<object>().photo)
                 //return new Response(await linktophotoattachment(peer_id))
               }
           }
