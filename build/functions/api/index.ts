@@ -74,10 +74,10 @@ class Callback {
 // }
 async function send(peer_id: number, text?: string, attachment?: string): Promise<Response> {
   var url = "https://api.vk.com/method/messages.send?random_id=0&access_token=" + token + "&v=5.131" + "&peer_id=" + peer_id
-  if (text !== undefined) {
+  if (text != "") {
     url += "&message=" + text
   }
-  if (attachment !== undefined) {
+  if (attachment != "") {
     url += "&attachment=" + attachment
   }
   const a = await fetch(url)
