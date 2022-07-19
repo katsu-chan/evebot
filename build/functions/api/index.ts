@@ -164,8 +164,9 @@ async function linktophotoattachment(peer_id: number): Promise<string> {
   const resp = JSON.parse(await (await fetch(
     "https://api.vk.com/method/photos.getMessagesUploadServer?&access_token=" +
     token + "&v=5.131&peer_id=" + peer_id)).text())
-  const resp2 = JSON.stringify(resp)
+  return resp.response.upload_url
+  //const resp2 = JSON.stringify(resp)
   //response.upload_url;
-  return resp2
+  //return resp2
 }
 
